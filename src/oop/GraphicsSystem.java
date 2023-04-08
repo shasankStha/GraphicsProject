@@ -475,11 +475,11 @@ public class GraphicsSystem extends LBUGraphics{
 					displayMessage("Error: You have to provide a numeric parameter here!");
 				else if(parameterLength == 2) {
 					triangle(paramsArr[0]);
-					displayMessage("Triangle of"+paramsArr[0]+" length drawn.");
+					displayMessage("Triangle of "+paramsArr[0]+" pixel drawn.");
 				}
 				else if(parameterLength == 4) {
 					triangle(paramsArr[0], paramsArr[1], paramsArr[2] );
-					displayMessage("Triangle of"+paramsArr[1]+" length drawn.");
+					displayMessage("Triangle of "+paramsArr[0]+", "+paramsArr[1]+", "+paramsArr[2]+" pixel is drawn.");
 				}
 				else
 					displayMessage("Error: You have to provide valid numeric parameter here!");
