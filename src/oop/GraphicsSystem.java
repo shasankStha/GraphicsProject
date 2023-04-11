@@ -31,6 +31,27 @@ public class GraphicsSystem extends LBUGraphics{
 	public void about() {
 		super.about();
 		displayMessage("Shasank Shrestha");
+		JLabel me = new JLabel("Shasank Shrestha");
+		me.setForeground(Color.white);
+		me.setBounds(FRAME_WIDTH/2-78, FRAME_HEIGHT/2-25, 150, 150);
+		JLabel me2 = new JLabel("Shasank Shrestha");
+		me2.setForeground(Color.gray);
+		me2.setBounds(FRAME_WIDTH/2-68, FRAME_HEIGHT/2-15, 150, 150);
+		JLabel me3 = new JLabel("Shasank Shrestha");
+		me3.setForeground(Color.gray);
+		me3.setBounds(FRAME_WIDTH/2-88, FRAME_HEIGHT/2-35, 150, 150);
+		this.add(me);
+		this.add(me2);
+		this.add(me3);
+		try {
+			Thread.sleep(5000);
+		}
+		catch(InterruptedException err) {
+			err.printStackTrace();
+		}
+		this.remove(me);
+		this.remove(me2);
+		this.remove(me3);
 	}
 	
 	public void square(int length) {
@@ -478,8 +499,13 @@ public class GraphicsSystem extends LBUGraphics{
 					displayMessage("Triangle of "+paramsArr[0]+" pixel drawn.");
 				}
 				else if(parameterLength == 4) {
-					triangle(paramsArr[0], paramsArr[1], paramsArr[2] );
-					displayMessage("Triangle of "+paramsArr[0]+", "+paramsArr[1]+", "+paramsArr[2]+" pixel is drawn.");
+					if(paramsArr[0]+paramsArr[1]>paramsArr[2] && paramsArr[1]+paramsArr[2]>paramsArr[0] && paramsArr[0]+paramsArr[2]>paramsArr[1]) {
+						triangle(paramsArr[0], paramsArr[1], paramsArr[2] );
+						displayMessage("Triangle of "+paramsArr[0]+", "+paramsArr[1]+", "+paramsArr[2]+" pixel is drawn.");
+					}
+					else {
+						displayMessage("Sum of two sides of triangle should be always greater than third side.");
+					}
 				}
 				else
 					displayMessage("Error: You have to provide valid numeric parameter here!");
