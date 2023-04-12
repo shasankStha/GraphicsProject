@@ -4,11 +4,11 @@ import java.awt.Color;
 import java.awt.FlowLayout;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
-import javax.imageio.ImageIO;
-import javax.swing.JFrame;
-import javax.swing.JOptionPane;
+import java.util.ArrayList;
 
+import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 
@@ -18,6 +18,12 @@ public class GraphicsSystem extends LBUGraphics{
 	
 	private static final int FRAME_WIDTH = 850;
 	private static final int FRAME_HEIGHT = 450;
+	ArrayList<String> commands = new ArrayList<String>();
+	
+	public static void main(String[] args)
+    {
+    	new GraphicsSystem();
+    }
 
 	public GraphicsSystem(){
 		JFrame MainFrame = new JFrame();
@@ -26,6 +32,7 @@ public class GraphicsSystem extends LBUGraphics{
 		MainFrame.setSize(FRAME_WIDTH, FRAME_HEIGHT);
 		MainFrame.setVisible(true);
 		MainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		penDown();
 	}
 	
 	public void about() {
@@ -155,44 +162,9 @@ public class GraphicsSystem extends LBUGraphics{
 		int[] paramsArr = new int[parameterLength-1];
 		boolean flag = true;
 
-		if(param.equals("save") || param.equals("load") || param.equals("hello")) {
+		if( param.equals("load") || param.equals("hello")) {
 			flag = false;
 			switch(param) {
-			case "save":
-				if(parameterLength == 1) {
-					BufferedImage img = getBufferedImage();
-					File f1 = new File("SavedImage.jpeg");
-					if(f1.exists())
-	    				JOptionPane.showMessageDialog(null,"Previously saved image is overwritten.");
-
-					try {
-						ImageIO.write(img, "jpeg", f1);
-						displayMessage("Image saved successfully by Savedimage.jpeg name.");
-					}
-					catch(IOException e) {
-	    				JOptionPane.showMessageDialog(null,"Error in saving image");
-	    				e.printStackTrace();
-					}
-				}
-				else if(parameterLength == 2) {
-					BufferedImage img = getBufferedImage();
-					File f1 = new File(parameter[1]+".jpeg");
-					if(f1.exists())
-	    				JOptionPane.showMessageDialog(null,"Previously saved image is overwritten.");
-
-					try {
-						ImageIO.write(img, "jpeg", f1);
-						displayMessage("Image saved successfully by "+parameter[1]+".jpeg name.");
-					}
-					catch(IOException e) {
-	    				JOptionPane.showMessageDialog(null,"Error in saving image");
-	    				e.printStackTrace();
-					}
-				}
-				else
-	    			JOptionPane.showMessageDialog(null, "Error: You have entered invalid parameter!");
-				break;
-				
 				
 			case "load":
 				if(parameterLength == 1) {
@@ -297,7 +269,8 @@ public class GraphicsSystem extends LBUGraphics{
 					reset();
 					setPenColour(Color.red);
 					setStroke(0);
-					displayMessage("Turtle position has been reset.");
+					penDown();
+					displayMessage("Turtle has been reset.");
 				}
 				else
 					displayMessage("Error: You have entered invalid parameter!");
@@ -511,11 +484,90 @@ public class GraphicsSystem extends LBUGraphics{
 					displayMessage("Error: You have to provide valid numeric parameter here!");
 				break;
 				
+				
+			
+			case "save":
+				if(parameterLength == 1) {
+					String type = JOptionPane.showInputDialog("What do you want to save?\n1) Command\n2) Image").toLowerCase();
+		    		String choice = "";
+		    		if(type.equals("command") || type.equals("c") || type.equals("1") || type.equals("commands"))
+		    			choice = "command";
+		    		else if(type.equals("image") || type.equals("i") || type.equals("2") || type.equals("images"))
+		    			choice = "image";
+		    		else {
+		    			flag = false;
+	    				JOptionPane.showMessageDialog(null,"Wrong input!!! Unable to save.");
+		    		}
+		    		switch(choice) {
+		    		
+		    		case "image":
+			    		try {
+			    			JFileChooser filechooser = new JFileChooser();
+			    			int i = filechooser.showOpenDialog(this);
+			    			
+			    			if(i==JFileChooser.APPROVE_OPTION) {
+			    				File file = filechooser.getSelectedFile();
+				    			BufferedImage img = getBufferedImage();
+		    					if(file.exists())
+		    	    				JOptionPane.showMessageDialog(null,"Previously saved image is overwritten!!!");
+								ImageIO.write(img, "jpeg", file);
+								displayMessage("Image saved successfully.");
+			    			}
+			    			else {
+			    				JOptionPane.showMessageDialog(null,"Error in saving image!!!");
+			    				displayMessage("Error in saving image!!!");
+			    			}
+			    		}
+		    			catch(IOException er) {
+		    				JOptionPane.showMessageDialog(null,"Error in saving image");
+	    					er.printStackTrace();
+		    			}
+			    		break;
+			    		
+		    		case "command":
+		    			try {
+			    			JFileChooser filechooser = new JFileChooser();
+			    			int i = filechooser.showOpenDialog(this);
+			    			
+			    			if(i==JFileChooser.APPROVE_OPTION) {
+			    				File file = filechooser.getSelectedFile();
+			    				if(file.exists())
+		    	    				JOptionPane.showMessageDialog(null,"Previously saved commands are overwritten!!!");
+			    				FileWriter f1 = new FileWriter(file,true);
+			    				for(String a : commands) {
+			    					f1.write(a+"\n");
+			    				}
+			    				f1.close();
+			    				displayMessage("Commands saved successful.");
+			    			}
+			    			else {
+			    				JOptionPane.showMessageDialog(null,"Error in saving commands!!!");
+			    				displayMessage("Error in saving commands!!!");
+		
+			    			}
+		    			}
+		    			catch(IOException er) {
+		    				JOptionPane.showMessageDialog(null,"Error in saving commands");
+	    					er.printStackTrace();
+		    			}
+			    		
+			    		
+		    		}
+				}
+				else
+					displayMessage("Error: You have entered invalid parameter!");
+
+				break;
+				
 			default:
 				JOptionPane.showMessageDialog(null,"Error: You have entered invalid command!");
 				flag = false;
 				
 			}
+		}
+		
+		if(flag) {
+			commands.add(command);
 		}
 	}
 }
