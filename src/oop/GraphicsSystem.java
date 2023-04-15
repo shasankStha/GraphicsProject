@@ -54,7 +54,6 @@ public class GraphicsSystem extends LBUGraphics{
 			Thread.sleep(5000);
 		}
 		catch(InterruptedException err) {
-			err.printStackTrace();
 		}
 		this.remove(me);
 		this.remove(me2);
@@ -86,17 +85,17 @@ public class GraphicsSystem extends LBUGraphics{
     	turnRight(180-60);
     	}
 	
-	 public void triangle(int a, int b, int c) {
-	    	double A = Math.acos((Math.pow(a, 2) + Math.pow(b, 2) - Math.pow(c, 2)) / (2 * a * b));
-	    	double B = Math.acos((Math.pow(a, 2) + Math.pow(c, 2) - Math.pow(b, 2)) / (2 * a * c));
-	    	double C = Math.acos((Math.pow(a, 2) + Math.pow(b, 2) - Math.pow(c, 2)) / (2 * a * b));
+	 public void triangle(int sideA, int sideB, int sideC) {
+	    	double angleA = Math.acos((Math.pow(sideC, 2) + Math.pow(sideB, 2) - Math.pow(sideA, 2)) / (2 * sideC * sideB));
+	    	double angleB = Math.acos((Math.pow(sideA, 2) + Math.pow(sideC, 2) - Math.pow(sideB, 2)) / (2 * sideA * sideC));
+	    	double angleC = Math.acos((Math.pow(sideA, 2) + Math.pow(sideB, 2) - Math.pow(sideC, 2)) / (2 * sideA * sideB));
 	    	
-	    	forward(c);
-	    	turnLeft((int)(180 - Math.ceil(Math.toDegrees(B))));    	
-	    	forward(a);    	
-	    	turnLeft((int)(180 - Math.ceil(Math.toDegrees(C))));
-	    	forward(b);
-	    	turnLeft((int)(180 - Math.ceil(Math.toDegrees(A))));
+	    	forward(sideA);
+	    	turnLeft((int)(180 - Math.ceil(Math.toDegrees(angleC))));    	
+	    	forward(sideB);    	
+	    	turnLeft((int)(180 - Math.ceil(Math.toDegrees(angleA))));
+	    	forward(sideC);
+	    	turnLeft((int)(180 - Math.ceil(Math.toDegrees(angleB))));
 	    }
 	 
 	 public void hello(int parameter) {
@@ -162,46 +161,9 @@ public class GraphicsSystem extends LBUGraphics{
 		int[] paramsArr = new int[parameterLength-1];
 		boolean flag = true;
 
-		if( param.equals("load") || param.equals("hello")) {
+		if( param.equals("hello")) {
 			flag = false;
 			switch(param) {
-				
-			case "load":
-				if(parameterLength == 1) {
-					if(new File("SavedImage.jpeg").exists()) {
-						try {
-							BufferedImage img = ImageIO.read(new File("SavedImage.jpeg"));
-							setBufferedImage(img);
-							displayMessage("Image loaded successfully");
-						}
-						catch(IOException e) {
-		    				JOptionPane.showMessageDialog(null,"Error in loading image!");
-		    				e.printStackTrace();
-						}
-					}
-					else
-    					JOptionPane.showMessageDialog(null,"Error: Save image before loading!");
-				}
-				
-				else if(parameterLength == 2) {
-					if(new File(parameter[1]+".jpeg").exists()) {
-						try {
-							BufferedImage img = ImageIO.read(new File(parameter[1]+".jpeg"));
-							setBufferedImage(img);
-							displayMessage(parameter[1]+".jpeg"+" Image loaded successfully");
-						}
-						catch(IOException e) {
-		    				JOptionPane.showMessageDialog(null,"Error in loading image!");
-		    				e.printStackTrace();
-						}
-					}
-					else
-    					JOptionPane.showMessageDialog(null,"Error: "+parameter[1] + ".jpeg image not found!");
-				}
-				else
-	    			JOptionPane.showMessageDialog(null, "Error: You have entered invalid parameter!");
-				break;
-
 			
 			case "hello":
 				if (parameterLength == 1) {
@@ -210,11 +172,6 @@ public class GraphicsSystem extends LBUGraphics{
 				}
 				else if(parameterLength == 2) {
 					setPenColour(Color.red);
-					int width = Integer.parseInt(parameter[1]);
-					hello(width);
-				}
-				else if(parameterLength == 3) {
-					setPenColour(Color.getColor(parameter[2]));
 					int width = Integer.parseInt(parameter[1]);
 					hello(width);
 				}
@@ -488,50 +445,18 @@ public class GraphicsSystem extends LBUGraphics{
 			
 			case "save":
 				if(parameterLength == 1) {
-					String type = JOptionPane.showInputDialog("What do you want to save?\n1) Command\n2) Image").toLowerCase();
-		    		String choice = "";
-		    		if(type.equals("command") || type.equals("c") || type.equals("1") || type.equals("commands"))
-		    			choice = "command";
-		    		else if(type.equals("image") || type.equals("i") || type.equals("2") || type.equals("images"))
-		    			choice = "image";
-		    		else {
-		    			flag = false;
-	    				JOptionPane.showMessageDialog(null,"Wrong input!!! Unable to save.");
-		    		}
-		    		switch(choice) {
-		    		
-		    		case "image":
-			    		try {
-			    			JFileChooser filechooser = new JFileChooser();
-			    			int i = filechooser.showOpenDialog(this);
-			    			
-			    			if(i==JFileChooser.APPROVE_OPTION) {
-			    				File file = filechooser.getSelectedFile();
-				    			BufferedImage img = getBufferedImage();
+		    		try {
+			    		String extension = "";
+			    		JFileChooser filechooser = new JFileChooser();
+		    			int i = filechooser.showOpenDialog(this);
+		    			if(i==JFileChooser.APPROVE_OPTION) {
+		    				File file = filechooser.getSelectedFile();
+		    				String filename = file.getName();
+		    				int exe = filename.lastIndexOf('.');
+		    				if(exe >=0 )
+		    					extension = filename.substring(exe+1).toLowerCase();
+		    				if(extension.equals("txt")) {
 		    					if(file.exists())
-		    	    				JOptionPane.showMessageDialog(null,"Previously saved image is overwritten!!!");
-								ImageIO.write(img, "jpeg", file);
-								displayMessage("Image saved successfully.");
-			    			}
-			    			else {
-			    				JOptionPane.showMessageDialog(null,"Error in saving image!!!");
-			    				displayMessage("Error in saving image!!!");
-			    			}
-			    		}
-		    			catch(IOException er) {
-		    				JOptionPane.showMessageDialog(null,"Error in saving image");
-	    					er.printStackTrace();
-		    			}
-			    		break;
-			    		
-		    		case "command":
-		    			try {
-			    			JFileChooser filechooser = new JFileChooser();
-			    			int i = filechooser.showOpenDialog(this);
-			    			
-			    			if(i==JFileChooser.APPROVE_OPTION) {
-			    				File file = filechooser.getSelectedFile();
-			    				if(file.exists())
 		    	    				JOptionPane.showMessageDialog(null,"Previously saved commands are overwritten!!!");
 			    				FileWriter f1 = new FileWriter(file,true);
 			    				for(String a : commands) {
@@ -539,25 +464,67 @@ public class GraphicsSystem extends LBUGraphics{
 			    				}
 			    				f1.close();
 			    				displayMessage("Commands saved successful.");
-			    			}
-			    			else {
-			    				JOptionPane.showMessageDialog(null,"Error in saving commands!!!");
-			    				displayMessage("Error in saving commands!!!");
-		
-			    			}
+		    				}
+		    				
+		    				else if(extension.equals("jpg") || extension.equals("png") || extension.equals("jpeg") ) {
+		    					BufferedImage img = getBufferedImage();
+		    					if(file.exists())
+		    	    				JOptionPane.showMessageDialog(null,"Previously saved commands are overwritten!!!");
+		    					ImageIO.write(img, "jpeg", file);
+								displayMessage("Image saved successfully.");
+		    				}
+		    				else {
+		    					flag = false;
+	    	    				JOptionPane.showMessageDialog(null,"Wrong extension! Unable to save.");
+	    	    				displayMessage("Wrong extension! Unable to save.");
+		    				}
 		    			}
-		    			catch(IOException er) {
-		    				JOptionPane.showMessageDialog(null,"Error in saving commands");
-	    					er.printStackTrace();
+		    			else {
+		    				flag = false;
+			    			JOptionPane.showMessageDialog(null,"Unable to save.");
+		    				displayMessage("Error! Unable to save.");
 		    			}
-			    		
-			    		
+	
+		    		}
+		    		catch(Exception e) {
+	    				displayMessage("Error! Unable to save.");
 		    		}
 				}
 				else
 					displayMessage("Error: You have entered invalid parameter!");
-
 				break;
+				
+			
+			case "load":
+				if(parameterLength == 1) {
+					try {
+		    			String extension = "";
+			    		JFileChooser filechooser = new JFileChooser();
+		    			int i = filechooser.showOpenDialog(this);
+		    			if(i==JFileChooser.APPROVE_OPTION) {
+		    				File file = filechooser.getSelectedFile();
+		    				String filename = file.getName();
+		    				int exe = filename.lastIndexOf('.');
+		    				if(exe >=0 )
+		    					extension = filename.substring(exe+1).toLowerCase();
+		    				
+		    				if(extension.equals("jpg") || extension.equals("png") || extension.equals("jpeg")){
+		    					BufferedImage img = ImageIO.read(file);
+		    					setBufferedImage(img);
+		    				}
+		    				else
+		    					displayMessage("Error! This file cannot be opened here.");
+		    			}
+		    		}
+		    		catch (Exception e) {
+		    			displayMessage("Error! Unable to load.");
+		    		}
+				}
+				else
+					displayMessage("Error: You have entered invalid parameter!");
+	    		break;
+				
+				
 				
 			default:
 				JOptionPane.showMessageDialog(null,"Error: You have entered invalid command!");
@@ -565,6 +532,8 @@ public class GraphicsSystem extends LBUGraphics{
 				
 			}
 		}
+		
+		
 		
 		if(flag) {
 			commands.add(command);
