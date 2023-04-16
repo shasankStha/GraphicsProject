@@ -3,21 +3,30 @@ package oop;
 import java.awt.Color;
 import java.awt.FlowLayout;
 import java.awt.image.BufferedImage;
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileReader;
 import java.io.FileWriter;
-import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
+import java.util.Scanner;
 
 import javax.imageio.ImageIO;
-import javax.swing.*;
-import java.awt.*;
+import javax.swing.JFileChooser;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
+import javax.swing.ScrollPaneConstants;
 
 import uk.ac.leedsbeckett.oop.LBUGraphics;
 
 public class GraphicsSystem extends LBUGraphics{
 	
-	private static final int FRAME_WIDTH = 850;
-	private static final int FRAME_HEIGHT = 450;
+	private final int FRAME_WIDTH = 850;
+	private final int FRAME_HEIGHT = 450;
 	ArrayList<String> commands = new ArrayList<String>();
 	
 	public static void main(String[] args)
@@ -40,24 +49,19 @@ public class GraphicsSystem extends LBUGraphics{
 		displayMessage("Shasank Shrestha");
 		JLabel me = new JLabel("Shasank Shrestha");
 		me.setForeground(Color.white);
-		me.setBounds(FRAME_WIDTH/2-78, FRAME_HEIGHT/2-25, 150, 150);
+		me.setBounds(FRAME_WIDTH/2, FRAME_HEIGHT/2, 100, 100);
 		JLabel me2 = new JLabel("Shasank Shrestha");
 		me2.setForeground(Color.gray);
-		me2.setBounds(FRAME_WIDTH/2-68, FRAME_HEIGHT/2-15, 150, 150);
-		JLabel me3 = new JLabel("Shasank Shrestha");
-		me3.setForeground(Color.gray);
-		me3.setBounds(FRAME_WIDTH/2-88, FRAME_HEIGHT/2-35, 150, 150);
+		me2.setBounds(FRAME_WIDTH/2-5, FRAME_HEIGHT/2-5, 100, 100);
 		this.add(me);
 		this.add(me2);
-		this.add(me3);
 		try {
-			Thread.sleep(5000);
+			Thread.sleep(1000);
 		}
 		catch(InterruptedException err) {
 		}
 		this.remove(me);
 		this.remove(me2);
-		this.remove(me3);
 	}
 	
 	public void square(int length) {
@@ -114,6 +118,7 @@ public class GraphicsSystem extends LBUGraphics{
 		forward(75);
 		forward(-150);
 		
+		setPenColour(Color.white);
 		setxPos(205);
 		setyPos(150);
 		turnLeft();
@@ -132,7 +137,7 @@ public class GraphicsSystem extends LBUGraphics{
 		turnRight();
 		forward(100);
 		
-
+		setPenColour(Color.blue);
 		setxPos(350);
 		setyPos(150);
 		turnRight();
@@ -140,6 +145,7 @@ public class GraphicsSystem extends LBUGraphics{
 		turnLeft();
 		forward(100);
 		
+		setPenColour(Color.yellow);
 		setxPos(485);
 		setyPos(150);
 		turnRight();
@@ -147,10 +153,12 @@ public class GraphicsSystem extends LBUGraphics{
 		turnLeft();
 		forward(100);
 		
+		setPenColour(Color.green);
 		setxPos(670);
 		setyPos(225);
 		circle(75);
 		reset();
+		displayMessage("Hello");
 	 }
 	 
 	
@@ -216,6 +224,7 @@ public class GraphicsSystem extends LBUGraphics{
 			case "clear":
 				if(parameterLength == 1) {
 					clear();
+					clearInterface();
 				}
 				else
 					displayMessage("Error: You have entered invalid parameter!");
@@ -371,10 +380,10 @@ public class GraphicsSystem extends LBUGraphics{
 			case "square":
 				if(parameterLength == 2) {
 	    			square(paramsArr[0]);
-	    			displayMessage("Square of "+paramsArr[0]+" length drawn.");
+	    			displayMessage("Square of "+paramsArr[0]+" pixel drawn.");
 	    		}
 				else
-					displayMessage("Error: You have to provide valid numeric parameter here!");
+					displayMessage("Error: You have entered invalid parameter!");
 				break;
 				
 			case "pencolor":
@@ -402,7 +411,7 @@ public class GraphicsSystem extends LBUGraphics{
 	    			penColor(paramsArr[0],0,0);
 	    		else if(parameterLength == 3 && paramsArr[0] <= 255 && paramsArr[1] <=255)
 	    			penColor(paramsArr[0],paramsArr[1],0);
-	    		else if(parameterLength == 4 && paramsArr[0] <= 255 && paramsArr[1] <=255 && paramsArr[1] <= 255)
+	    		else if(parameterLength == 4 && paramsArr[0] <= 255 && paramsArr[1] <=255 && paramsArr[2] <= 255)
 	    			penColor(paramsArr[0],paramsArr[1],paramsArr[2]);
 	    		else
 					displayMessage("Error: You have entered invalid parameter!");
@@ -444,6 +453,7 @@ public class GraphicsSystem extends LBUGraphics{
 				
 			
 			case "save":
+				flag = false;
 				if(parameterLength == 1) {
 		    		try {
 			    		String extension = "";
@@ -457,7 +467,7 @@ public class GraphicsSystem extends LBUGraphics{
 		    					extension = filename.substring(exe+1).toLowerCase();
 		    				if(extension.equals("txt")) {
 		    					if(file.exists())
-		    	    				JOptionPane.showMessageDialog(null,"Previously saved commands are overwritten!!!");
+		    	    				JOptionPane.showMessageDialog(null,"Commands are added");
 			    				FileWriter f1 = new FileWriter(file,true);
 			    				for(String a : commands) {
 			    					f1.write(a+"\n");
@@ -469,25 +479,21 @@ public class GraphicsSystem extends LBUGraphics{
 		    				else if(extension.equals("jpg") || extension.equals("png") || extension.equals("jpeg") ) {
 		    					BufferedImage img = getBufferedImage();
 		    					if(file.exists())
-		    	    				JOptionPane.showMessageDialog(null,"Previously saved commands are overwritten!!!");
+		    	    				JOptionPane.showMessageDialog(null,"Previously saved image are overwritten!!!");
 		    					ImageIO.write(img, "jpeg", file);
 								displayMessage("Image saved successfully.");
 		    				}
 		    				else {
-		    					flag = false;
-	    	    				JOptionPane.showMessageDialog(null,"Wrong extension! Unable to save.");
 	    	    				displayMessage("Wrong extension! Unable to save.");
 		    				}
 		    			}
 		    			else {
-		    				flag = false;
-			    			JOptionPane.showMessageDialog(null,"Unable to save.");
-		    				displayMessage("Error! Unable to save.");
+		    				displayMessage("Error: Unable to save!");
 		    			}
 	
 		    		}
 		    		catch(Exception e) {
-	    				displayMessage("Error! Unable to save.");
+	    				displayMessage("Error: Unable to save!");
 		    		}
 				}
 				else
@@ -496,6 +502,7 @@ public class GraphicsSystem extends LBUGraphics{
 				
 			
 			case "load":
+				flag = false;
 				if(parameterLength == 1) {
 					try {
 		    			String extension = "";
@@ -512,6 +519,45 @@ public class GraphicsSystem extends LBUGraphics{
 		    					BufferedImage img = ImageIO.read(file);
 		    					setBufferedImage(img);
 		    				}
+		    				
+		    				else if(extension.equals("txt")) {
+		    					JFrame frame = new JFrame("Commands");
+		    					JTextArea textArea = new JTextArea();
+		    					BufferedReader reader = new BufferedReader(new FileReader(file));
+		    					String commands = reader.readLine();
+		    					
+		    					try {
+		    				          
+		    				          while(commands != null) {
+		    				        	  textArea.append(commands+"\n");
+		    				        	  commands = reader.readLine();
+		    				          }
+		    				        } 
+		    					catch (Exception e) {
+		    				          e.printStackTrace();
+		    				        }
+		    					JScrollPane scrollPane = new JScrollPane(textArea);
+								scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+								frame.add(scrollPane);
+		    					frame.setSize(500,500);
+		    					frame.setLocationRelativeTo(filechooser);
+		    					frame.setVisible(true);
+		    					
+		    					int reply = JOptionPane.showConfirmDialog(null, "Do you want to run this code?","Command Run",JOptionPane.YES_NO_OPTION);
+		    					
+		    					if(reply == JOptionPane.YES_OPTION){
+		    						try (Scanner dataReader = new Scanner(file)) {
+										while(dataReader.hasNextLine()) {
+											processCommand(dataReader.nextLine());
+										}
+										displayMessage("Commands loaded sucessfully.");
+									}
+		    			        }
+		    					else if(reply == JOptionPane.NO_OPTION) {
+		    						displayMessage("Commands previewed successfully");
+		    					}
+		    				}
+		    				
 		    				else
 		    					displayMessage("Error! This file cannot be opened here.");
 		    			}
