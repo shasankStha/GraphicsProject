@@ -523,21 +523,21 @@ public class GraphicsSystem extends LBUGraphics{
 		    				else if(extension.equals("txt")) {
 		    					JFrame frame = new JFrame("Commands");
 		    					JTextArea textArea = new JTextArea();
-		    					BufferedReader reader = new BufferedReader(new FileReader(file));
-		    					String commands = reader.readLine();
-		    					
-		    					try {
-		    				          
-		    				          while(commands != null) {
-		    				        	  textArea.append(commands+"\n");
-		    				        	  commands = reader.readLine();
-		    				          }
-		    				        } 
-		    					catch (Exception e) {
-		    				          e.printStackTrace();
-		    				        }
+		    					try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
+									String commands = reader.readLine();
+									
+									try {
+									      while(commands != null) {
+									    	  textArea.append(commands+"\n");
+									    	  commands = reader.readLine();
+									      }
+									    } 
+									catch (Exception e) {
+									      e.printStackTrace();
+									    }
+								}
 		    					JScrollPane scrollPane = new JScrollPane(textArea);
-								scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
+								scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
 								frame.add(scrollPane);
 		    					frame.setSize(500,500);
 		    					frame.setLocationRelativeTo(filechooser);
