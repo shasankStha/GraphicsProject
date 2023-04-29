@@ -2,16 +2,17 @@ package oop;
 
 import java.awt.Color;
 import java.awt.FlowLayout;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Scanner;
-
 import javax.imageio.ImageIO;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
@@ -21,10 +22,11 @@ import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.ScrollPaneConstants;
 
+import oop.GraphicsSystem.MoveTurtle;
 import uk.ac.leedsbeckett.oop.LBUGraphics;
 
 public class GraphicsSystem extends LBUGraphics{
-	
+	JFrame MainFrame;
 	private final int FRAME_WIDTH = 850;
 	private final int FRAME_HEIGHT = 450;
 	ArrayList<String> commands = new ArrayList<String>();
@@ -35,7 +37,7 @@ public class GraphicsSystem extends LBUGraphics{
     }
 
 	public GraphicsSystem(){
-		JFrame MainFrame = new JFrame();
+		MainFrame = new JFrame();
 		MainFrame.setLayout(new FlowLayout());
 		MainFrame.add(this);
 		MainFrame.setSize(FRAME_WIDTH, FRAME_HEIGHT);
@@ -102,6 +104,28 @@ public class GraphicsSystem extends LBUGraphics{
 	    	turnLeft((int)(180 - Math.ceil(Math.toDegrees(angleB))));
 	    }
 	 
+	 public void createAccount() {
+	    	Account obj = new Account();
+	    	obj.createAccount();
+	    }
+	 
+	 public void login() {
+	    	Account obj = new Account();
+	    	obj.loginAccount();
+	    }
+	    
+	 public void delete() {
+	    	Account obj = new Account();
+	    	obj.deleteAccount();
+	    }
+
+	 	
+	 public void move() {
+	    	JOptionPane.showMessageDialog(null, "Press Enter or ESC to exit!!!");
+	    	MoveTurtle obj = new MoveTurtle();
+	    	obj.start();
+	    }
+	    
 	 public void hello(int parameter) {
 		reset();
 		penDown();
@@ -118,7 +142,7 @@ public class GraphicsSystem extends LBUGraphics{
 		forward(75);
 		forward(-150);
 		
-		setPenColour(Color.white);
+		setPenColour(Color.green);
 		setxPos(205);
 		setyPos(150);
 		turnLeft();
@@ -153,7 +177,7 @@ public class GraphicsSystem extends LBUGraphics{
 		turnLeft();
 		forward(100);
 		
-		setPenColour(Color.green);
+		setPenColour(Color.white);
 		setxPos(670);
 		setyPos(225);
 		circle(75);
@@ -168,27 +192,6 @@ public class GraphicsSystem extends LBUGraphics{
 		int parameterLength = parameter.length;
 		int[] paramsArr = new int[parameterLength-1];
 		boolean flag = true;
-
-		if( param.equals("hello")) {
-			flag = false;
-			switch(param) {
-			
-			case "hello":
-				if (parameterLength == 1) {
-					setPenColour(Color.red);
-					hello(5);
-				}
-				else if(parameterLength == 2) {
-					setPenColour(Color.red);
-					int width = Integer.parseInt(parameter[1]);
-					hello(width);
-				}
-				else
-	    			JOptionPane.showMessageDialog(null, "Error: You have entered invalid parameter!");
-				break;
-			}
-		}
-		
 		
 		
 		if(parameterLength > 1 && flag == true) {
@@ -218,7 +221,7 @@ public class GraphicsSystem extends LBUGraphics{
 					about();
 				}
 				else
-					displayMessage("Error: You have entered invalid parameter!");
+					displayMessage("Error: About command doesn't have any parameters!");
 				break;
 				
 			case "clear":
@@ -227,7 +230,7 @@ public class GraphicsSystem extends LBUGraphics{
 					clearInterface();
 				}
 				else
-					displayMessage("Error: You have entered invalid parameter!");
+					displayMessage("Error: Clear command doesn't have any parameters!");
 				break;
 				
 			case "reset":
@@ -239,7 +242,7 @@ public class GraphicsSystem extends LBUGraphics{
 					displayMessage("Turtle has been reset.");
 				}
 				else
-					displayMessage("Error: You have entered invalid parameter!");
+					displayMessage("Error: Reset command doesn't have any parameters!");
 				break;
 				
 			case "penup":
@@ -248,7 +251,7 @@ public class GraphicsSystem extends LBUGraphics{
 	    			displayMessage("Pen is up. The turtle won't draw.");
 				}
 				else
-					displayMessage("Error: You have entered invalid parameter!");
+					displayMessage("Error: Penup command doesn't have any parameters!");
 				break;
 				
 			case "pendown":
@@ -257,7 +260,7 @@ public class GraphicsSystem extends LBUGraphics{
 	    			displayMessage("Pen is down. The turtle will draw.");
 				}
 				else
-					displayMessage("Error: You have entered invalid parameter!");
+					displayMessage("Pendown command doesn't have any parameters!");
 				break;
 			
 			case "turnleft":
@@ -270,7 +273,7 @@ public class GraphicsSystem extends LBUGraphics{
 	    			displayMessage("Turtle turn left by " +paramsArr[0]+" degree.");
 				}
 				else
-					displayMessage("Error: You have entered invalid parameter!");
+					displayMessage("Error: Turnleft command accepts only one parameters!");
 				break;
 				
 			case "turnright":
@@ -283,7 +286,7 @@ public class GraphicsSystem extends LBUGraphics{
 	    			displayMessage("Turtle turn right by " +paramsArr[0]+" degree.");
 				}
 				else
-					displayMessage("Error: You have entered invalid parameter!");
+					displayMessage("Error: Turnright command accepts only one parameters!");
 				break;
 				
 			case "forward":
@@ -292,7 +295,7 @@ public class GraphicsSystem extends LBUGraphics{
 	    			displayMessage("Turtle moved forward by "+paramsArr[0]+" pixel.");
 	    		}
 				else
-					displayMessage("Error: You have to provide valid numeric parameter here!");
+					displayMessage("Error: Forward command accepts one parameters!");
 				break;
 				
 			case "backward":
@@ -301,7 +304,7 @@ public class GraphicsSystem extends LBUGraphics{
 	    			displayMessage("Turtle moved backward by "+paramsArr[0]+" pixel.");
 	    		}
 				else
-					displayMessage("Error: You have to provide valid numeric parameter here!");
+					displayMessage("Error: Backward command accepts one parameters!");
 				break;	
 			
 			case "black":
@@ -310,7 +313,7 @@ public class GraphicsSystem extends LBUGraphics{
 	    			displayMessage("Pen color has been changed to black.");
 				}
 				else
-					displayMessage("Error: You have entered invalid parameter!");
+					displayMessage("Error: Black command doesn't have any parameters!");
 				break;
 				
 			case "green":
@@ -319,7 +322,7 @@ public class GraphicsSystem extends LBUGraphics{
 	    			displayMessage("Pen color has been changed to green.");
 				}
 				else
-					displayMessage("Error: You have entered invalid parameter!");
+					displayMessage("Error: Green command doesn't have any parameters!");
 				break;
 				
 			case "red":
@@ -328,7 +331,7 @@ public class GraphicsSystem extends LBUGraphics{
 	    			displayMessage("Pen color has been changed to red.");
 				}
 				else
-					displayMessage("Error: You have entered invalid parameter!");
+					displayMessage("Error: Red command doesn't have any parameters!");
 				break;	
 				
 			
@@ -338,7 +341,7 @@ public class GraphicsSystem extends LBUGraphics{
 	    			displayMessage("Pen color has been changed to white.");
 				}
 				else
-					displayMessage("Error: You have entered invalid parameter!");
+					displayMessage("Error: White command doesn't have any parameters!");
 				break;
 				
 			case "blue":
@@ -347,7 +350,7 @@ public class GraphicsSystem extends LBUGraphics{
 	    			displayMessage("Pen color has been changed to blue.");
 				}
 				else
-					displayMessage("Error: You have entered invalid parameter!");
+					displayMessage("Error: Blue command doesn't have any parameters!");
 				break;
 				
 			case "orange":
@@ -356,7 +359,7 @@ public class GraphicsSystem extends LBUGraphics{
 	    			displayMessage("Pen color has been changed to orange.");
 				}
 				else
-					displayMessage("Error: You have entered invalid parameter!");
+					displayMessage("Error: Orange command doesn't have any parameters!");
 				break;
 				
 			case "pink":
@@ -365,7 +368,7 @@ public class GraphicsSystem extends LBUGraphics{
 	    			displayMessage("Pen color has been changed to pink.");
 				}
 				else
-					displayMessage("Error: You have entered invalid parameter!");
+					displayMessage("Error: Pink command doesn't have any parameters!");
 				break;
 				
 			case "yellow":
@@ -374,7 +377,7 @@ public class GraphicsSystem extends LBUGraphics{
 	    			displayMessage("Pen color has been changed to yellow.");
 				}
 				else
-					displayMessage("Error: You have entered invalid parameter!");
+					displayMessage("Error: Yellow command doesn't have any parameters!");
 				break;
 				
 			case "square":
@@ -383,7 +386,16 @@ public class GraphicsSystem extends LBUGraphics{
 	    			displayMessage("Square of "+paramsArr[0]+" pixel drawn.");
 	    		}
 				else
-					displayMessage("Error: You have entered invalid parameter!");
+					displayMessage("Error: Square command accepts one parameter!");
+				break;
+				
+			case "circle":
+				if(parameterLength == 2) {
+	    			circle(paramsArr[0]);
+	    			displayMessage("Circle of "+paramsArr[0]+" radius drawn.");
+	    		}
+				else
+					displayMessage("Error: Circle command accepts one parameter!");
 				break;
 				
 			case "pencolor":
@@ -414,7 +426,7 @@ public class GraphicsSystem extends LBUGraphics{
 	    		else if(parameterLength == 4 && paramsArr[0] <= 255 && paramsArr[1] <=255 && paramsArr[2] <= 255)
 	    			penColor(paramsArr[0],paramsArr[1],paramsArr[2]);
 	    		else
-					displayMessage("Error: You have entered invalid parameter!");
+					displayMessage("Error: You have entered invalid number of parameters!");
 	    		break;
 	    		
 			case "penwidth":
@@ -426,7 +438,7 @@ public class GraphicsSystem extends LBUGraphics{
 	    			displayMessage("Pen width is changed to "+paramsArr[0]+" pixel.");
 	    		}
 	    		else
-					displayMessage("Error: You have entered invalid parameter!");
+					displayMessage("Error: Penwidth command accepts only one parameter!");
 
 	    		break;
 	    		
@@ -447,7 +459,7 @@ public class GraphicsSystem extends LBUGraphics{
 					}
 				}
 				else
-					displayMessage("Error: You have to provide valid numeric parameter here!");
+					displayMessage("Error: You have entered invalid number of parameters!");
 				break;
 				
 				
@@ -465,14 +477,18 @@ public class GraphicsSystem extends LBUGraphics{
 		    				int exe = filename.lastIndexOf('.');
 		    				if(exe >=0 )
 		    					extension = filename.substring(exe+1).toLowerCase();
-		    				if(extension.equals("txt")) {
+		    				if(extension.equals("txt") || extension.equals("")) {
+		    					FileWriter fileWriter;
+		    					if(extension == "")
+		    						fileWriter = new FileWriter(file+".txt",true);
+		    					else
+		    						fileWriter = new FileWriter(file,true);
 		    					if(file.exists())
 		    	    				JOptionPane.showMessageDialog(null,"Commands are added");
-			    				FileWriter f1 = new FileWriter(file,true);
 			    				for(String a : commands) {
-			    					f1.write(a+"\n");
+			    					fileWriter.write(a+"\n");
 			    				}
-			    				f1.close();
+			    				fileWriter.close();
 			    				displayMessage("Commands saved successful.");
 		    				}
 		    				
@@ -497,7 +513,7 @@ public class GraphicsSystem extends LBUGraphics{
 		    		}
 				}
 				else
-					displayMessage("Error: You have entered invalid parameter!");
+					displayMessage("Error: Save command doesn't have any parameters!");
 				break;
 				
 			
@@ -550,6 +566,7 @@ public class GraphicsSystem extends LBUGraphics{
 										while(dataReader.hasNextLine()) {
 											processCommand(dataReader.nextLine());
 										}
+										frame.dispose();
 										displayMessage("Commands loaded sucessfully.");
 									}
 		    			        }
@@ -567,11 +584,55 @@ public class GraphicsSystem extends LBUGraphics{
 		    		}
 				}
 				else
-					displayMessage("Error: You have entered invalid parameter!");
+					displayMessage("Error: Save command doesn't have any parameters!");
 	    		break;
+	    	
+			case "hello":
+				if (parameterLength == 1) {
+					setPenColour(Color.red);
+					hello(5);
+				}
+				else if(parameterLength == 2) {
+					setPenColour(Color.red);
+					int width = Integer.parseInt(parameter[1]);
+					hello(width);
+				}
+				else
+	    			displayMessage("Error: Hello command accepts only one parameter!");
+				break;
 				
+			case "create":
+				if(parameterLength == 1) {
+					createAccount();
+				}
+				else
+					displayMessage("Error: Create command doesn't have any parameters!");
+				break;
+	    	
+	    	case "login":
+	    		if(parameterLength == 1) {
+					login();
+				}
+				else
+					displayMessage("Error: Login command doesn't have any parameters!");
+				break;
+	    	
+	    	case "delete":
+	    		if(parameterLength == 1) {
+					delete();
+				}
+				else
+					displayMessage("Error: Delete command doesn't have any parameters!");
+				break;
 				
-				
+	    	case "move":
+	    		if(parameterLength == 1) {
+					move();
+				}
+				else
+					displayMessage("Error: Move command doesn't have any parameters!");
+				break;
+		
 			default:
 				JOptionPane.showMessageDialog(null,"Error: You have entered invalid command!");
 				flag = false;
@@ -583,6 +644,103 @@ public class GraphicsSystem extends LBUGraphics{
 		
 		if(flag) {
 			commands.add(command);
+		}
+		if(getxPos() > FRAME_WIDTH) {
+    		setxPos(FRAME_WIDTH-80);
+    		updateUI();
+    		JOptionPane.showMessageDialog(null,"Turtle moved out of bounds!");
+    	}
+    	else if(getxPos() < 0) {
+    		setxPos(30);
+    		updateUI();
+    		JOptionPane.showMessageDialog(null,"Turtle moved out of bounds!");
+    	}
+    	else if(getyPos() > FRAME_HEIGHT) {
+    		setyPos(FRAME_HEIGHT-80);
+    		updateUI();
+    		JOptionPane.showMessageDialog(null,"Turtle moved out of bounds!");
+    	}
+    	else if(getyPos() < 0) {
+    		setyPos(30);
+    		updateUI();
+    		JOptionPane.showMessageDialog(null,"Turtle moved out of bounds!");
+    	}
+	}
+	public class MoveTurtle extends Thread implements KeyListener{
+		private JFrame frame;
+		public void run() {
+			setGUIVisible(false);
+			frame = new JFrame();
+			frame.addKeyListener(this);
+			frame.setAlwaysOnTop(true);
+			frame.getContentPane().setBackground(Color.black);
+			frame.setVisible(true);
+			frame.setResizable(false);
+			frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+			frame.addWindowListener(new WindowAdapter() {
+			    @Override
+			    public void windowClosing(WindowEvent windowEvent) {
+			    	setGUIVisible(true);
+			    }
+			});
+		}
+		@Override
+		public void keyTyped(KeyEvent e) {
+		}
+
+		@Override
+		public void keyPressed(KeyEvent e) {
+			if(e.getKeyCode()==10 || e.getKeyCode()==27) {
+				frame.dispose();
+				setGUIVisible(true);
+			}
+		}
+
+		@Override
+		public void keyReleased(KeyEvent e) {
+			// TODO Auto-generated method stub
+			switch(e.getKeyChar()) {
+			
+			case 'a':
+				turnRight();
+				forward(10);
+				turnLeft();
+				break;
+			
+			case 'd':
+				turnLeft();
+				forward(10);
+				turnRight();
+				break;
+				
+			case 'w':
+				forward(10);
+				break;
+			
+			case 's':
+				forward(-10);
+				break;
+			
+		}
+			// TODO Auto-generated method stub
+			switch(e.getKeyCode()) {
+			
+			case 37:
+				turnRight(10);
+				break;
+				
+			case 38:
+				forward(10);
+				break;
+			
+			case 39:
+				turnLeft(10);
+				break;
+				
+			case 40:
+				forward(-10);
+				break;
+		}
 		}
 	}
 }
