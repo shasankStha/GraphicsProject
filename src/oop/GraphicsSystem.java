@@ -42,6 +42,7 @@ public class GraphicsSystem extends LBUGraphics{
 		MainFrame.add(this);
 		MainFrame.setSize(FRAME_WIDTH, FRAME_HEIGHT);
 		MainFrame.setVisible(true);
+		MainFrame.setResizable(false);
 		MainFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		penDown();
 	}
@@ -645,27 +646,36 @@ public class GraphicsSystem extends LBUGraphics{
 		if(flag) {
 			commands.add(command);
 		}
+		
+		boolean outofBoundFlag = false;
 		if(getxPos() > FRAME_WIDTH) {
     		setxPos(FRAME_WIDTH-80);
     		updateUI();
-    		JOptionPane.showMessageDialog(null,"Turtle moved out of bounds!");
+    		outofBoundFlag = true;
     	}
     	else if(getxPos() < 0) {
     		setxPos(30);
     		updateUI();
-    		JOptionPane.showMessageDialog(null,"Turtle moved out of bounds!");
+    		outofBoundFlag = true;
     	}
-    	else if(getyPos() > FRAME_HEIGHT) {
+		
+    	if(getyPos() > FRAME_HEIGHT) {
     		setyPos(FRAME_HEIGHT-80);
     		updateUI();
-    		JOptionPane.showMessageDialog(null,"Turtle moved out of bounds!");
+    		outofBoundFlag = true;
     	}
     	else if(getyPos() < 0) {
     		setyPos(30);
     		updateUI();
-    		JOptionPane.showMessageDialog(null,"Turtle moved out of bounds!");
+    		outofBoundFlag = true;
     	}
+    	
+    	if(outofBoundFlag) 
+    		JOptionPane.showMessageDialog(null,"Turtle moved out of bounds!!!");
 	}
+	
+	
+	
 	public class MoveTurtle extends Thread implements KeyListener{
 		private JFrame frame;
 		public void run() {
