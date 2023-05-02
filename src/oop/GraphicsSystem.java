@@ -2,6 +2,7 @@ package oop;
 
 import java.awt.Color;
 import java.awt.FlowLayout;
+import java.awt.Font;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.WindowAdapter;
@@ -14,6 +15,7 @@ import java.io.FileWriter;
 import java.util.ArrayList;
 import java.util.Scanner;
 import javax.imageio.ImageIO;
+import javax.swing.JColorChooser;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -21,15 +23,13 @@ import javax.swing.JOptionPane;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
 import javax.swing.ScrollPaneConstants;
-
-import oop.GraphicsSystem.MoveTurtle;
 import uk.ac.leedsbeckett.oop.LBUGraphics;
 
 public class GraphicsSystem extends LBUGraphics{
-	JFrame MainFrame;
+	private JFrame MainFrame;
 	private final int FRAME_WIDTH = 850;
 	private final int FRAME_HEIGHT = 450;
-	ArrayList<String> commands = new ArrayList<String>();
+	private ArrayList<String> commands = new ArrayList<String>();
 	
 	public static void main(String[] args)
     {
@@ -47,27 +47,210 @@ public class GraphicsSystem extends LBUGraphics{
 		penDown();
 	}
 	
-	public void about() {
-		super.about();
-		displayMessage("Shasank Shrestha");
-		JLabel me = new JLabel("Shasank Shrestha");
-		me.setForeground(Color.white);
-		me.setBounds(FRAME_WIDTH/2, FRAME_HEIGHT/2, 100, 100);
-		JLabel me2 = new JLabel("Shasank Shrestha");
-		me2.setForeground(Color.gray);
-		me2.setBounds(FRAME_WIDTH/2-5, FRAME_HEIGHT/2-5, 100, 100);
-		this.add(me);
-		this.add(me2);
+	private void save() {
 		try {
-			Thread.sleep(1000);
+    		String extension = "";
+    		JFileChooser filechooser = new JFileChooser();
+			int i = filechooser.showOpenDialog(this);
+			if(i==JFileChooser.APPROVE_OPTION) {
+				File file = filechooser.getSelectedFile();
+				String filename = file.getName();
+				int exe = filename.lastIndexOf('.');
+				if(exe >=0 )
+					extension = filename.substring(exe+1).toLowerCase();
+				
+				if(extension.equals("txt")) {
+					if(file.exists()){
+	    				int check = JOptionPane.showConfirmDialog(null,"Do you want to append the code?", "Confirm" , JOptionPane.YES_NO_OPTION);
+						if(check == JOptionPane.YES_OPTION) {
+							FileWriter fileWriter = new FileWriter(file,true);
+							for(String a : commands) {
+		    					fileWriter.write(a+"\n");
+		    				}
+		    				fileWriter.close();
+		    				displayMessage("Commands append successful.");
+						}
+						else {
+							int check2 = JOptionPane.showConfirmDialog(null, "Are you sure want to override this code?","Confirm", JOptionPane.YES_NO_OPTION);
+							if(check2 == JOptionPane.YES_OPTION) {
+								FileWriter fileWriter = new FileWriter(file);
+								for(String a : commands) {
+			    					fileWriter.write(a+"\n");
+			    				}
+			    				fileWriter.close();
+			    				displayMessage("Commands overwritten successful.");
+							}
+							else
+								save();
+						}
+	    			}
+					else {
+
+	    				FileWriter fileWriter = new FileWriter(file);
+	    				for(String a : commands) {
+	    					fileWriter.write(a+"\n");
+	    				}
+	    				fileWriter.close();
+	    				displayMessage("Commands saved successful.");
+					}
+				}
+				
+				else if(extension.equals("jpg")) {
+					BufferedImage img = getBufferedImage();
+					if(file.exists()) {
+	    				int check = JOptionPane.showConfirmDialog(null,"Do you want to replace the previously saved image?", "Confirm" , JOptionPane.YES_NO_OPTION);
+						if(check == JOptionPane.YES_OPTION) {
+							JOptionPane.showMessageDialog(null,"Previously saved image is overwritten!!!");
+							ImageIO.write(img, "jpg", file);
+							displayMessage("Image saved successfully.");
+	    				}
+						else {
+							save();
+						}
+					}
+					else {
+						ImageIO.write(img, "jpg", file);
+						displayMessage("Image saved successfully.");
+					}
+					
+				}
+				else if(extension.equals("jpeg") ) {
+					BufferedImage img = getBufferedImage();
+					if(file.exists()) {
+	    				int check = JOptionPane.showConfirmDialog(null,"Do you want to replace the previously saved image?", "Confirm" , JOptionPane.YES_NO_OPTION);
+						if(check == JOptionPane.YES_OPTION) {
+							JOptionPane.showMessageDialog(null,"Previously saved image is overwritten!!!");
+							ImageIO.write(img, "jpeg", file);
+							displayMessage("Image saved successfully.");
+	    				}
+						else {
+							save();
+						}
+					}
+
+					else {
+						ImageIO.write(img, "jpeg", file);
+						displayMessage("Image saved successfully.");
+					}
+				}
+				else if(extension.equals("png")) {
+					BufferedImage img = getBufferedImage();
+					if(file.exists()) {
+	    				int check = JOptionPane.showConfirmDialog(null,"Do you want to replace the previously saved image?", "Confirm" , JOptionPane.YES_NO_OPTION);
+						if(check == JOptionPane.YES_OPTION) {
+							JOptionPane.showMessageDialog(null,"Previously saved image is overwritten!!!");
+							ImageIO.write(img, "jpeg", file);
+							displayMessage("Image saved successfully.");
+	    				}
+						else {
+							save();
+						}
+					}
+
+					else {
+						ImageIO.write(img, "png", file);
+						displayMessage("Image saved successfully.");
+					}
+				}
+				
+				else {
+    				displayMessage("Wrong extension! Unable to save.");
+				}
+			}
+			else {
+				displayMessage("Unable to save.");
+			}
+
 		}
-		catch(InterruptedException err) {
+		catch(Exception e) {
+			displayMessage("Error! Unable to save.");
 		}
-		this.remove(me);
-		this.remove(me2);
 	}
 	
-	public void square(int length) {
+	private void load() {
+		try {
+			String extension = "";
+    		JFileChooser filechooser = new JFileChooser();
+			int i = filechooser.showOpenDialog(this);
+			if(i==JFileChooser.APPROVE_OPTION) {
+				File file = filechooser.getSelectedFile();
+				String filename = file.getName();
+				int exe = filename.lastIndexOf('.');
+				if(exe >=0 )
+					extension = filename.substring(exe+1).toLowerCase();
+				
+				if(extension.equals("jpg") || extension.equals("png") || extension.equals("jpeg")){
+					BufferedImage img = ImageIO.read(file);
+					setBufferedImage(img);
+					displayMessage("Image loaded successfully.");
+				}
+				
+				else if(extension.equals("txt")) {
+					JFrame frame = new JFrame("Commands");
+					JTextArea textArea = new JTextArea();
+					try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
+						String commands = reader.readLine();
+						
+						try {
+						      while(commands != null) {
+						    	  textArea.append(commands+"\n");
+						    	  commands = reader.readLine();
+						      }
+						    } 
+						catch (Exception e) {
+						      displayMessage("Error! loading commands.");
+						    }
+					}
+					JScrollPane scrollPane = new JScrollPane(textArea);
+					scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
+					frame.add(scrollPane);
+					frame.setSize(500,500);
+					frame.setLocationRelativeTo(filechooser);
+					frame.setVisible(true);
+					
+					int reply = JOptionPane.showConfirmDialog(null, "Do you want to run this code?","Command Run",JOptionPane.YES_NO_OPTION);
+					
+					if(reply == JOptionPane.YES_OPTION){
+						try (Scanner dataReader = new Scanner(file)) {
+							while(dataReader.hasNextLine()) {
+								processCommand(dataReader.nextLine());
+							}
+							frame.dispose();
+							displayMessage("Commands loaded sucessfully.");
+						}
+			        }
+					else if(reply == JOptionPane.NO_OPTION) {
+						displayMessage("Commands previewed successfully");
+					}
+				}
+				
+				else
+					displayMessage("Error! This file cannot be opened here.");
+			}
+		}
+		catch (Exception e) {
+			displayMessage("Error! Unable to load.");
+		}
+	}
+	
+	public void about() {
+    	reset();
+    	clear();
+    	super.about();
+    	JLabel label = new JLabel("Shasank Shrestha");
+    	label.setFont(new Font("SansSerif", Font.BOLD, 24));
+    	label.setBounds(290,180,300,200);
+    	label.setForeground(Color.white);
+    	this.add(label);
+    	try {
+    		Thread.sleep(5000);
+    	}
+    	catch(InterruptedException e) {
+    	}
+    	this.remove(label);
+    }
+	
+	private void square(int length) {
     	forward(length);
     	turnLeft();
     	forward(length);
@@ -78,21 +261,21 @@ public class GraphicsSystem extends LBUGraphics{
     	turnLeft();
 	}
 	
-	public void penColor(int red, int green, int blue) {
+	private void penColor(int red, int green, int blue) {
 		setPenColour(new Color(red,green,blue));
 		displayMessage("The colour of pen is changed.");
 	}
 	
-	public void triangle(int length) {
+	private void triangle(int length) {
     	forward(length);
     	turnRight(180-60);
     	forward(length);
     	turnRight(180-60);
     	forward(length);
     	turnRight(180-60);
-    	}
+    }
 	
-	 public void triangle(int sideA, int sideB, int sideC) {
+	 private void triangle(int sideA, int sideB, int sideC) {
 	    	double angleA = Math.acos((Math.pow(sideC, 2) + Math.pow(sideB, 2) - Math.pow(sideA, 2)) / (2 * sideC * sideB));
 	    	double angleB = Math.acos((Math.pow(sideA, 2) + Math.pow(sideC, 2) - Math.pow(sideB, 2)) / (2 * sideA * sideC));
 	    	double angleC = Math.acos((Math.pow(sideA, 2) + Math.pow(sideB, 2) - Math.pow(sideC, 2)) / (2 * sideA * sideB));
@@ -105,29 +288,30 @@ public class GraphicsSystem extends LBUGraphics{
 	    	turnLeft((int)(180 - Math.ceil(Math.toDegrees(angleB))));
 	    }
 	 
-	 public void createAccount() {
+	 private void createAccount() {
 	    	Account obj = new Account();
 	    	obj.createAccount();
 	    }
 	 
-	 public void login() {
+	 private void login() {
 	    	Account obj = new Account();
 	    	obj.loginAccount();
 	    }
 	    
-	 public void delete() {
+	 private void delete() {
 	    	Account obj = new Account();
 	    	obj.deleteAccount();
 	    }
 
 	 	
-	 public void move() {
+	 private void move() {
 	    	JOptionPane.showMessageDialog(null, "Press Enter or ESC to exit!!!");
 	    	MoveTurtle obj = new MoveTurtle();
 	    	obj.start();
 	    }
 	    
-	 public void hello(int parameter) {
+	 private void hello(int parameter) {
+		Color color = getPenColour();
 		reset();
 		penDown();
 		setStroke(parameter);
@@ -183,7 +367,9 @@ public class GraphicsSystem extends LBUGraphics{
 		setyPos(225);
 		circle(75);
 		reset();
-		displayMessage("Hello");
+		setStroke(1);
+		setPenColour(color);
+		displayMessage("Hello! Welcome to the program.");
 	 }
 	 
 	
@@ -238,7 +424,7 @@ public class GraphicsSystem extends LBUGraphics{
 				if(parameterLength == 1) {
 					reset();
 					setPenColour(Color.red);
-					setStroke(0);
+					setStroke(1);
 					penDown();
 					displayMessage("Turtle has been reset.");
 				}
@@ -311,7 +497,7 @@ public class GraphicsSystem extends LBUGraphics{
 			case "black":
 				if(parameterLength == 1) {
 					setPenColour(Color.black);
-	    			displayMessage("Pen color has been changed to black.");
+	    			displayMessage("Pen colour has been changed to black.");
 				}
 				else
 					displayMessage("Error: Black command doesn't have any parameters!");
@@ -320,7 +506,7 @@ public class GraphicsSystem extends LBUGraphics{
 			case "green":
 				if(parameterLength == 1) {
 					setPenColour(Color.green);
-	    			displayMessage("Pen color has been changed to green.");
+	    			displayMessage("Pen colour has been changed to green.");
 				}
 				else
 					displayMessage("Error: Green command doesn't have any parameters!");
@@ -329,7 +515,7 @@ public class GraphicsSystem extends LBUGraphics{
 			case "red":
 				if(parameterLength == 1) {
 					setPenColour(Color.red);
-	    			displayMessage("Pen color has been changed to red.");
+	    			displayMessage("Pen colour has been changed to red.");
 				}
 				else
 					displayMessage("Error: Red command doesn't have any parameters!");
@@ -339,7 +525,7 @@ public class GraphicsSystem extends LBUGraphics{
 			case "white":
 				if(parameterLength == 1) {
 					setPenColour(Color.white);
-	    			displayMessage("Pen color has been changed to white.");
+	    			displayMessage("Pen colour has been changed to white.");
 				}
 				else
 					displayMessage("Error: White command doesn't have any parameters!");
@@ -348,7 +534,7 @@ public class GraphicsSystem extends LBUGraphics{
 			case "blue":
 				if(parameterLength == 1) {
 					setPenColour(Color.blue);
-	    			displayMessage("Pen color has been changed to blue.");
+	    			displayMessage("Pen colour has been changed to blue.");
 				}
 				else
 					displayMessage("Error: Blue command doesn't have any parameters!");
@@ -357,7 +543,7 @@ public class GraphicsSystem extends LBUGraphics{
 			case "orange":
 				if(parameterLength == 1) {
 					setPenColour(Color.orange);
-	    			displayMessage("Pen color has been changed to orange.");
+	    			displayMessage("Pen colour has been changed to orange.");
 				}
 				else
 					displayMessage("Error: Orange command doesn't have any parameters!");
@@ -366,7 +552,7 @@ public class GraphicsSystem extends LBUGraphics{
 			case "pink":
 				if(parameterLength == 1) {
 					setPenColour(Color.pink);
-	    			displayMessage("Pen color has been changed to pink.");
+	    			displayMessage("Pen colour has been changed to pink.");
 				}
 				else
 					displayMessage("Error: Pink command doesn't have any parameters!");
@@ -375,7 +561,7 @@ public class GraphicsSystem extends LBUGraphics{
 			case "yellow":
 				if(parameterLength == 1) {
 					setPenColour(Color.yellow);
-	    			displayMessage("Pen color has been changed to yellow.");
+	    			displayMessage("Pen colour has been changed to yellow.");
 				}
 				else
 					displayMessage("Error: Yellow command doesn't have any parameters!");
@@ -399,8 +585,15 @@ public class GraphicsSystem extends LBUGraphics{
 					displayMessage("Error: Circle command accepts one parameter!");
 				break;
 				
-			case "pencolor":
+			case "pencolour":
 	    		if(parameterLength == 1) {
+		    		try {
+		    			Color color = JColorChooser.showDialog(null, "Pick a colour", getPenColour());
+		    			if(!color.equals(null))
+		    				setPenColour(color);
+	    			}
+	    			catch(Exception e) {
+	    			}
 	    			if(getPenColour().equals(Color.red))
 	    				displayMessage("The colour of the pen is Red.");
 	    			else if(getPenColour().equals(Color.black))
@@ -418,12 +611,8 @@ public class GraphicsSystem extends LBUGraphics{
 	    			else if(getPenColour().equals(Color.yellow))
 	    				displayMessage("The colour of the pen is Yellow.");
 	    			else
-	    				displayMessage("The color of the pen is "+getPenColour());
+	    				displayMessage("The colour of the pen is "+getPenColour());
 	    		}
-	    		else if(parameterLength == 2 && paramsArr[0] <= 255) 
-	    			penColor(paramsArr[0],0,0);
-	    		else if(parameterLength == 3 && paramsArr[0] <= 255 && paramsArr[1] <=255)
-	    			penColor(paramsArr[0],paramsArr[1],0);
 	    		else if(parameterLength == 4 && paramsArr[0] <= 255 && paramsArr[1] <=255 && paramsArr[2] <= 255)
 	    			penColor(paramsArr[0],paramsArr[1],paramsArr[2]);
 	    		else
@@ -468,50 +657,7 @@ public class GraphicsSystem extends LBUGraphics{
 			case "save":
 				flag = false;
 				if(parameterLength == 1) {
-		    		try {
-			    		String extension = "";
-			    		JFileChooser filechooser = new JFileChooser();
-		    			int i = filechooser.showOpenDialog(this);
-		    			if(i==JFileChooser.APPROVE_OPTION) {
-		    				File file = filechooser.getSelectedFile();
-		    				String filename = file.getName();
-		    				int exe = filename.lastIndexOf('.');
-		    				if(exe >=0 )
-		    					extension = filename.substring(exe+1).toLowerCase();
-		    				if(extension.equals("txt") || extension.equals("")) {
-		    					FileWriter fileWriter;
-		    					if(extension == "")
-		    						fileWriter = new FileWriter(file+".txt",true);
-		    					else
-		    						fileWriter = new FileWriter(file,true);
-		    					if(file.exists())
-		    	    				JOptionPane.showMessageDialog(null,"Commands are added");
-			    				for(String a : commands) {
-			    					fileWriter.write(a+"\n");
-			    				}
-			    				fileWriter.close();
-			    				displayMessage("Commands saved successful.");
-		    				}
-		    				
-		    				else if(extension.equals("jpg") || extension.equals("png") || extension.equals("jpeg") ) {
-		    					BufferedImage img = getBufferedImage();
-		    					if(file.exists())
-		    	    				JOptionPane.showMessageDialog(null,"Previously saved image are overwritten!!!");
-		    					ImageIO.write(img, "jpeg", file);
-								displayMessage("Image saved successfully.");
-		    				}
-		    				else {
-	    	    				displayMessage("Wrong extension! Unable to save.");
-		    				}
-		    			}
-		    			else {
-		    				displayMessage("Error: Unable to save!");
-		    			}
-	
-		    		}
-		    		catch(Exception e) {
-	    				displayMessage("Error: Unable to save!");
-		    		}
+		    		save();
 				}
 				else
 					displayMessage("Error: Save command doesn't have any parameters!");
@@ -521,68 +667,7 @@ public class GraphicsSystem extends LBUGraphics{
 			case "load":
 				flag = false;
 				if(parameterLength == 1) {
-					try {
-		    			String extension = "";
-			    		JFileChooser filechooser = new JFileChooser();
-		    			int i = filechooser.showOpenDialog(this);
-		    			if(i==JFileChooser.APPROVE_OPTION) {
-		    				File file = filechooser.getSelectedFile();
-		    				String filename = file.getName();
-		    				int exe = filename.lastIndexOf('.');
-		    				if(exe >=0 )
-		    					extension = filename.substring(exe+1).toLowerCase();
-		    				
-		    				if(extension.equals("jpg") || extension.equals("png") || extension.equals("jpeg")){
-		    					BufferedImage img = ImageIO.read(file);
-		    					setBufferedImage(img);
-		    				}
-		    				
-		    				else if(extension.equals("txt")) {
-		    					JFrame frame = new JFrame("Commands");
-		    					JTextArea textArea = new JTextArea();
-		    					try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
-									String commands = reader.readLine();
-									
-									try {
-									      while(commands != null) {
-									    	  textArea.append(commands+"\n");
-									    	  commands = reader.readLine();
-									      }
-									    } 
-									catch (Exception e) {
-									      e.printStackTrace();
-									    }
-								}
-		    					JScrollPane scrollPane = new JScrollPane(textArea);
-								scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_AS_NEEDED);
-								frame.add(scrollPane);
-		    					frame.setSize(500,500);
-		    					frame.setLocationRelativeTo(filechooser);
-		    					frame.setVisible(true);
-		    					
-		    					int reply = JOptionPane.showConfirmDialog(null, "Do you want to run this code?","Command Run",JOptionPane.YES_NO_OPTION);
-		    					
-		    					if(reply == JOptionPane.YES_OPTION){
-		    						try (Scanner dataReader = new Scanner(file)) {
-										while(dataReader.hasNextLine()) {
-											processCommand(dataReader.nextLine());
-										}
-										frame.dispose();
-										displayMessage("Commands loaded sucessfully.");
-									}
-		    			        }
-		    					else if(reply == JOptionPane.NO_OPTION) {
-		    						displayMessage("Commands previewed successfully");
-		    					}
-		    				}
-		    				
-		    				else
-		    					displayMessage("Error! This file cannot be opened here.");
-		    			}
-		    		}
-		    		catch (Exception e) {
-		    			displayMessage("Error! Unable to load.");
-		    		}
+					load();
 				}
 				else
 					displayMessage("Error: Save command doesn't have any parameters!");

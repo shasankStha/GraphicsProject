@@ -78,13 +78,13 @@ public class Account extends JFrame{
 	                    Statement sta = connection.createStatement();
 	                    int x = sta.executeUpdate(query);
 	                    if (x == 0) {
-	                        JOptionPane.showMessageDialog(submit, "This is alredy exist");
+	                        JOptionPane.showMessageDialog(submit, "This account alredy exist");
 	                    } else {
 	                        JOptionPane.showMessageDialog(submit,
 	                            "Welcome, " + firstName +" "+ lastName + "\nYour account is sucessfully created");
 	                    }
 	                } catch (Exception exception) {
-	                	JOptionPane.showMessageDialog(null, "Unable to save");
+	                	JOptionPane.showMessageDialog(null, "This account alredy exist");
 	                }
 					frame.dispose();
 				}
