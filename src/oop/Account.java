@@ -14,6 +14,7 @@ import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 
+@SuppressWarnings("serial")
 public class Account extends JFrame{
 	private JFrame frame;
 	private JPanel content;
@@ -62,26 +63,25 @@ public class Account extends JFrame{
         
         submit = new JButton("Submit");
         submit.addActionListener(new ActionListener() {
-
+        	//After the submit button is pressed then data is send for validation
 			public void actionPerformed(ActionEvent e) {
-				String firstName = firstname.getText();
+				String firstName = firstname.getText(); //getting values from textfields
 				String lastName = lastname.getText();
 				String userId = userid.getText();
+				@SuppressWarnings("deprecation")
 				String pswd = password.getText();
 				if(!firstName.equals("") && !lastName.equals("") && !userId.equals("") && !pswd.equals("")) {
+					//Checking if the values are empty or not
 					try {
-	                    Connection connection = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/account", "root", "080309");
-
-	                    String query = "INSERT INTO acc values('" + firstName + "','" + lastName + "','" + userId + "','" +
-	                        pswd + "')";
-
-	                    Statement sta = connection.createStatement();
-	                    int x = sta.executeUpdate(query);
+	                    Connection connection = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/account", "root", "080309"); //getting connection to database
+	                    String query = "INSERT INTO acc values('" + firstName + "','" + lastName + "','" + userId + "','" + pswd + "')"; //query to insert data in database
+	                    Statement sta = connection.createStatement(); //Creating a statement object to send sql statement
+	                    int x = sta.executeUpdate(query); //Execute SQL query to insert data
 	                    if (x == 0) {
+	                    	//executeUpdate return nothing 
 	                        JOptionPane.showMessageDialog(submit, "This account alredy exist");
 	                    } else {
-	                        JOptionPane.showMessageDialog(submit,
-	                            "Welcome, " + firstName +" "+ lastName + "\nYour account is sucessfully created");
+	                        JOptionPane.showMessageDialog(submit,"Welcome, " + firstName +" "+ lastName + "\nYour account is sucessfully created");
 	                    }
 	                } catch (Exception exception) {
 	                	JOptionPane.showMessageDialog(null, "This account alredy exist");
@@ -130,16 +130,19 @@ public class Account extends JFrame{
 	        submit = new JButton("Submit");
 	        submit.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
+					//Getting user input from textfield
 					String username = userid.getText();
+					@SuppressWarnings("deprecation")
 					String psw = password.getText();
 					try {
 						Connection connection = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/account", "root", "080309");
-						String query = "SELECT * FROM acc WHERE user_name = '"+username+"' and password = '"+psw+"';";
+						String query = "SELECT * FROM acc WHERE user_name = '"+username+"' and password = '"+psw+"';"; // Select statement to retrive data from database
 						Statement sta = connection.createStatement();
-						ResultSet rs = sta.executeQuery(query);
-						if(rs.next()) {
-							String fname = rs.getString(1);
-							String lname = rs.getString(2);
+						ResultSet rs = sta.executeQuery(query); //Executing sql statement, returns a resultset
+						if(rs.next())//Moves cursor one row forward to check if there is row or not
+						{
+							String fname = rs.getString(1); //Reads the first row first column returned from database
+							String lname = rs.getString(2); //Reads the first row second column returned from database
 							JOptionPane.showMessageDialog(null,"Hello, "+fname+" "+lname+"\nYou have logged in successfully.");
 						}
 						else {
@@ -192,15 +195,18 @@ public class Account extends JFrame{
 	        submit.addActionListener(new ActionListener() {
 				public void actionPerformed(ActionEvent e) {
 					String username = userid.getText();
+					@SuppressWarnings("deprecation")
 					String psw = password.getText();
 					try {
 						Connection connection = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/account", "root", "080309");
-						String query = "SELECT * FROM acc WHERE user_name = '"+username+"' and password = '"+psw+"';";
+						String query = "SELECT * FROM acc WHERE user_name = '"+username+"' and password = '"+psw+"';"; //Select statement to retrive data for checking
 						Statement sta = connection.createStatement();
 						ResultSet rs = sta.executeQuery(query);
 						if(rs.next()) {
+							//if the username and password is valid then asking user if they are sure
 							int reply = JOptionPane.showConfirmDialog(null, "Are you sure want to delete your account?","Delete Account",JOptionPane.YES_NO_OPTION);
 							if(reply == JOptionPane.YES_OPTION) {
+								//if user clicked yes the row is deleted
 								String que = "DELETE FROM acc WHERE user_name = '"+username+"' and password = '"+psw+"';";
 								sta.executeUpdate(que);
 								JOptionPane.showMessageDialog(null, "Your account has been successfully deleted.");
