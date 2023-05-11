@@ -56,8 +56,9 @@ public class GraphicsSystem extends LBUGraphics{
 		try {
     		String extension = "";
     		JFileChooser filechooser = new JFileChooser();
-			int i = filechooser.showOpenDialog(this);
-			if(i==JFileChooser.APPROVE_OPTION) {//Checking if file is selected or not
+			int i = filechooser.showSaveDialog(this);
+			if(i==JFileChooser.APPROVE_OPTION) {
+				//Checking if file is selected or not
 				File file = filechooser.getSelectedFile();
 				String filename = file.getName();
 				int exe = filename.lastIndexOf('.');
@@ -68,10 +69,7 @@ public class GraphicsSystem extends LBUGraphics{
 				if(extension.equals("")) {
 					//if user hasn't entered extension then asking in a panel what does user wanna save
 					Object [] options = {"Commands", "Image"};
-					int choice = JOptionPane.showOptionDialog(null, "What do you want to save?","Saving", JOptionPane.YES_NO_OPTION,JOptionPane.QUESTION_MESSAGE,
-						    null,
-						    options,
-						    null);
+					int choice = JOptionPane.showOptionDialog(null, "What do you want to save?","Saving", JOptionPane.YES_NO_OPTION,JOptionPane.QUESTION_MESSAGE,null,options,null);
 					if(choice == JOptionPane.YES_OPTION) {
 						// if user selects commands then file is added with ".txt" extension
 						extension = "txt";
@@ -272,7 +270,7 @@ public class GraphicsSystem extends LBUGraphics{
 			}
 		}
 		catch (Exception e) {
-			displayMessage("Error! Unable to load.");
+			displayMessage("Error! File not found.");
 		}
 	}
 	
@@ -293,20 +291,20 @@ public class GraphicsSystem extends LBUGraphics{
     	this.remove(label);
     }
 	
-	private void square(int length) {
+	public void square(int length) {
 		for(int i=1; i<=4;i++) {
 	    	forward(length);
 	    	turnLeft();
 		}
 	}
 	
-	private void penColor(int red, int green, int blue) {
+	public void penColor(int red, int green, int blue) {
 		//Getting the rgb value less than 255 and setting the color of the pen 
 		setPenColour(new Color(red,green,blue));
 		displayMessage("The colour of pen is changed.");
 	}
 	
-	private void triangle(int length) {
+	public void triangle(int length) {
 		//As triangle has three side loop is run for 3 times
 		for(int i=1; i<=3;i++) {
 	    	forward(length);
@@ -314,7 +312,7 @@ public class GraphicsSystem extends LBUGraphics{
 		}
     }
 	
-	 private void triangle(int sideA, int sideB, int sideC) {
+	 public void triangle(int sideA, int sideB, int sideC) {
 		//Getting the angle of triangle from the provided sides
     	double angleA = Math.acos((Math.pow(sideC, 2) + Math.pow(sideB, 2) - Math.pow(sideA, 2)) / (2 * sideC * sideB));
     	double angleB = Math.acos((Math.pow(sideA, 2) + Math.pow(sideC, 2) - Math.pow(sideB, 2)) / (2 * sideA * sideC));
@@ -328,30 +326,30 @@ public class GraphicsSystem extends LBUGraphics{
     	turnLeft((int)(180 - Math.ceil(Math.toDegrees(angleB))));
     }
 	 
-	 private void createAccount() {
+	 public void createAccount() {
 		 //Creating object of Account class and calling methods
 	    	Account obj = new Account();
 	    	obj.createAccount();
 	    }
 	 
-	 private void login() {
+	 public void login() {
 	    	Account obj = new Account();
 	    	obj.loginAccount();
 	    }
 	    
-	 private void delete() {
+	 public void delete() {
 	    	Account obj = new Account();
 	    	obj.deleteAccount();
 	    }
 
 	 	
-	 private void move() {
+	 public void move() {
 	    	JOptionPane.showMessageDialog(null, "Press Enter or ESC to exit!!!");
 	    	MoveTurtle obj = new MoveTurtle();
 	    	obj.start();// Starting thread 
 	    }
 	    
-	 private void hello(int parameter) {
+	 public void hello(int parameter) {
 		Color color = getPenColour();
 		reset();
 		penDown();

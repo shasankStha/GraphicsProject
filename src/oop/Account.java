@@ -16,6 +16,7 @@ import javax.swing.JTextField;
 
 @SuppressWarnings("serial")
 public class Account extends JFrame{
+	//This is a class for imagination part
 	private JFrame frame;
 	private JPanel content;
 	private JTextField firstname, lastname, userid;
