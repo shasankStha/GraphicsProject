@@ -5,6 +5,7 @@ import java.awt.event.ActionListener;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Statement;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -142,9 +143,9 @@ public class Account extends JFrame{
 						ResultSet rs = sta.executeQuery(query); //Executing sql statement, returns a resultset
 						if(rs.next())//Moves cursor one row forward to check if there is row or not
 						{
-							String fname = rs.getString(1); //Reads the first row first column returned from database
-							String lname = rs.getString(2); //Reads the first row second column returned from database
-							JOptionPane.showMessageDialog(null,"Hello, "+fname+" "+lname+"\nYou have logged in successfully.");
+							String fName = rs.getString(1); //Reads the first row first column returned from database
+							String lName = rs.getString(2); //Reads the first row second column returned from database
+							JOptionPane.showMessageDialog(null,"Hello, "+fName+" "+lName+"\nYou have logged in successfully.");
 						}
 						else {
 							JOptionPane.showMessageDialog(null, "Error!!! Enter valid username and password.");
@@ -162,6 +163,151 @@ public class Account extends JFrame{
 	        content.add(submit);
 			
 			frame.add(content);
+			frame.setResizable(false);
+			frame.setBounds(500, 250, 300, 250);
+			frame.setVisible(true);
+		}
+		
+		public void changeAccountPassword() {
+			frame = new JFrame("Password changer");
+			content = new JPanel();
+	        setContentPane(content);
+	        content.setLayout(null);
+	        
+	        JLabel changePassword = new JLabel("Change Password");
+	        changePassword.setFont(new Font("Times New Roman", Font.PLAIN, 24));
+	        changePassword.setBounds(80, 30, 200, 30);
+	        content.add(changePassword);
+	        
+	        JLabel id = new JLabel("User ID :");
+	        id.setBounds(30, 90, 200, 20);
+	        userid = new JTextField();
+	        userid.setBounds(100, 92, 145, 20);
+	        content.add(id);
+	        content.add(userid);
+			
+	        JLabel psw = new JLabel("Password :");
+	        psw.setBounds(30, 130, 200, 20);
+	        password = new JPasswordField();
+	        password.setBounds(100, 132, 145, 20);
+	        content.add(psw);
+	        content.add(password);
+	        
+	        submit = new JButton("Submit");
+	        submit.addActionListener(new ActionListener() {
+				public void actionPerformed(ActionEvent e) {
+					String username = userid.getText();
+					@SuppressWarnings("deprecation")
+					String psw = password.getText();
+					try {
+						Connection connection = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/account", "root", "080309");
+						String query = "SELECT * FROM acc WHERE user_name = '"+username+"' and password = '"+psw+"';"; //Select statement to retrive data for checking
+						Statement sta = connection.createStatement();
+						ResultSet rs = sta.executeQuery(query);
+						if(rs.next()) {
+							//if the username and password is valid then asking user if they are sure
+							String fName = rs.getString(1);
+							String lName = rs.getString(2);
+							String uName = rs.getString(3);
+							String password = rs.getString(4);
+							frame.dispose();
+							
+							JFrame jFrame = new JFrame("Change Password");
+							JPanel newContent = new JPanel();
+							setContentPane(newContent);
+							newContent.setLayout(null);
+							
+							JLabel addNewPassword = new JLabel("Add New Password");
+					        addNewPassword.setFont(new Font("Times New Roman", Font.PLAIN, 24));
+					        addNewPassword.setBounds(70, 20, 200, 30);
+					        newContent.add(addNewPassword);
+							
+							JLabel oldPassword = new JLabel("Old Password: ");
+							JPasswordField oldPsw = new  JPasswordField();
+							oldPassword.setBounds(20, 90, 200, 20);
+							oldPsw.setBounds(130, 92, 145, 20);
+							newContent.add(oldPassword);
+							newContent.add(oldPsw);
+							
+							JLabel newPassword = new JLabel("New Password: ");
+							JPasswordField newPsw = new  JPasswordField();
+							newPassword.setBounds(20, 130, 200, 20);
+							newPsw.setBounds(130, 132, 145, 20);
+							newContent.add(newPassword);
+							newContent.add(newPsw);
+							
+							
+							JLabel confirmPassword = new JLabel("Confirm Password: ");
+							JPasswordField confirmPsw = new  JPasswordField();
+							confirmPassword.setBounds(20, 170, 200, 20);
+							confirmPsw.setBounds(130, 172, 145, 20);
+							newContent.add(confirmPassword);
+							newContent.add(confirmPsw);
+							
+							JButton newSubmit = new JButton("Submit");
+					        newSubmit.addActionListener(new ActionListener() {
+
+								@SuppressWarnings("deprecation")
+								@Override
+								public void actionPerformed(ActionEvent e) {
+									// TODO Auto-generated method stub
+									if(password.equals(oldPsw.getText())) {
+										// Checking if the old password matches or not
+										if(newPsw.getText().equals(confirmPsw.getText())){
+											//Checking if the new and confirm password matches or not
+											try {
+												Connection connection = DriverManager.getConnection("jdbc:mysql://127.0.0.1:3306/account", "root", "080309");
+												String query = "DELETE FROM acc WHERE user_name = '"+uName+"' and password = '"+password+"';"; //Query for deleting the previous data
+												String updatedQuery =  "INSERT INTO acc values('" + fName + "','" + lName + "','" + uName + "','" + newPsw.getText() + "')"; //Query for inserting new data in database
+												Statement sta = connection.createStatement();
+												sta.executeUpdate(query);
+												int a = sta.executeUpdate(updatedQuery);
+												if(a == 0) {
+													JOptionPane.showMessageDialog(null,"Error!!! Unable to change password.");
+												}
+												else {
+													JOptionPane.showMessageDialog(null,"Your password successfully changed");
+												}
+												
+											} catch (SQLException e1) {
+												// TODO Auto-generated catch block
+												JOptionPane.showMessageDialog(null,"Error!!! Unable to change password.");
+											}
+										}
+										else {
+											JOptionPane.showMessageDialog(null, "New password and Confirm password didn't match");
+										}
+										
+									}
+									else
+										JOptionPane.showMessageDialog(null, "Old password didn't match");
+									jFrame.dispose();
+								}
+					        	
+					        });
+							newSubmit.setBounds(120, 200, 80, 20);
+							newContent.add(newSubmit);
+					        
+							jFrame.add(newContent);
+							jFrame.setBounds(500,250, 325,270);
+							jFrame.setResizable(false);
+							jFrame.setVisible(true);
+						}
+						else {
+							JOptionPane.showMessageDialog(null, "Error!!! Enter valid username and password.");
+						}
+						frame.dispose();
+					}
+					catch(Exception err) {
+							JOptionPane.showMessageDialog(null,"Error!!! Unable to delete data");			
+						}
+				}
+	        	
+	        });
+	        submit.setBounds(120, 162, 80, 30);
+	        content.add(submit);
+	        
+	        frame.add(content);
 			frame.setResizable(false);
 			frame.setBounds(500, 250, 300, 250);
 			frame.setVisible(true);

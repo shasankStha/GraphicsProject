@@ -31,7 +31,7 @@ public class GraphicsSystem extends LBUGraphics{
 	
 	private final int FRAME_WIDTH = 850; //Width of MainFrame
 	private final int FRAME_HEIGHT = 450; //HEight of MainFrame
-	
+	JFrame MainFrame;	// declaring JFrame
 	private ArrayList<String> commands = new ArrayList<String>(); // ArrayList to store sucessfully ran commands for saving purpose
 	
 	public static void main(String[] args)
@@ -41,7 +41,7 @@ public class GraphicsSystem extends LBUGraphics{
 	
 	//Constructor
 	public GraphicsSystem(){
-		JFrame MainFrame = new JFrame(); //Initializing JFrame
+		MainFrame = new JFrame(); //Initializing JFrame
 		MainFrame.setLayout(new FlowLayout());
 		MainFrame.add(this);
 		MainFrame.setSize(FRAME_WIDTH, FRAME_HEIGHT);
@@ -55,11 +55,12 @@ public class GraphicsSystem extends LBUGraphics{
 		// When save method is called filechooser gets launched and user could choose the file or type in the name of file
 		try {
     		String extension = "";
-    		JFileChooser filechooser = new JFileChooser();
-			int i = filechooser.showSaveDialog(this);
+    		JFileChooser fileChooser = new JFileChooser("D:\\");
+    		fileChooser.setSelectedFile(new File("turtleGraphics"));
+			int i = fileChooser.showSaveDialog(this);
 			if(i==JFileChooser.APPROVE_OPTION) {
 				//Checking if file is selected or not
-				File file = filechooser.getSelectedFile();
+				File file = fileChooser.getSelectedFile();
 				String filename = file.getName();
 				int exe = filename.lastIndexOf('.');
 				if(exe >=0 )
@@ -202,7 +203,8 @@ public class GraphicsSystem extends LBUGraphics{
 		//When load method is called filechooser is launched
 		try {
 			String extension = "";
-    		JFileChooser filechooser = new JFileChooser();
+    		JFileChooser filechooser = new JFileChooser("D:\\");
+    		filechooser.setSelectedFile(new File("turtleGraphics"));
 			int i = filechooser.showOpenDialog(this);
 			if(i==JFileChooser.APPROVE_OPTION) {
 				File file = filechooser.getSelectedFile();
@@ -275,8 +277,9 @@ public class GraphicsSystem extends LBUGraphics{
 	}
 	
 	public void about() {
-    	reset();
     	clear();
+    	reset();
+    	penDown();
     	super.about(); //Calling about method of parent class(LBUGraphics)
     	JLabel label = new JLabel("Shasank Shrestha");
     	label.setFont(new Font("SansSerif", Font.ITALIC, 36)); //Changing the font of label
@@ -337,6 +340,11 @@ public class GraphicsSystem extends LBUGraphics{
 	    	obj.loginAccount();
 	    }
 	    
+	 public void changePassword() {
+	    	Account obj = new Account();
+	    	obj.changeAccountPassword();
+	    }
+	 
 	 public void delete() {
 	    	Account obj = new Account();
 	    	obj.deleteAccount();
@@ -829,7 +837,15 @@ public class GraphicsSystem extends LBUGraphics{
 				else
 					displayMessage("Error: Login command doesn't have any parameters!");
 				break;
-	    	
+	    	case "change":
+	    		flag = false; // This is extra database part so, flag is set false so that it is not added to commands arraylist
+	    		if(parameterLength == 1) {
+	    			changePassword();
+				}
+				else
+					displayMessage("Error: Login command doesn't have any parameters!");
+				break;
+				
 	    	case "delete":
 	    		flag = false; // This is extra database part so, flag is set false so that it is not added to commands arraylist
 	    		if(parameterLength == 1) {
@@ -847,6 +863,10 @@ public class GraphicsSystem extends LBUGraphics{
 				else
 					displayMessage("Error: Move command doesn't have any parameters!");
 				break;
+				
+	    	case "exit":
+	    			MainFrame.dispose();
+	    		break;
 		
 			default:
 				// If the command doesn't match error message is displayed through dialogbox
@@ -928,7 +948,6 @@ public class GraphicsSystem extends LBUGraphics{
 		//When user presses 'W','A','S','D' or "up","down","right","left" command the turtle moves and draws
 		@Override
 		public void keyTyped(KeyEvent e) {
-			System.out.println(e.getKeyCode());
 		}
 
 		@Override
