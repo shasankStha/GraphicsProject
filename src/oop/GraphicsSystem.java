@@ -1,7 +1,6 @@
 package oop;
 
 import java.awt.Color;
-
 import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.event.KeyEvent;
@@ -551,25 +550,35 @@ public class GraphicsSystem extends LBUGraphics{
 				break;
 				
 			case "forward":
-				//this command will only run if forward command is provided with parameter else error message is displayed
-				if(parameterLength == 2) { 
+				//if forward command is entered without any parameter then turtle moves by 50 pixel
+				if(parameterLength == 1) {
+					forward(50);
+	    			displayMessage("Turtle moved forward by 50 pixel.");
+				}
+				//this command will only run if forward command is provided with one parameter
+				else if(parameterLength == 2) { 
 	    			forward(paramsArr[0]);
 	    			displayMessage("Turtle moved forward by "+paramsArr[0]+" pixel.");
 	    		}
 				else {
-					displayMessage("Error: Forward command accepts one parameters!");
+					displayMessage("Error: Forward command accepts only one parameters!");
 					flag = false;
 				}
 				break;
 				
 			case "backward":
-				if(parameterLength == 2) {
+				//if backward command is entered without any parameter then turtle moves by 50 pixel
+				if(parameterLength == 1) {
+					forward(-50);
+	    			displayMessage("Turtle moved backward by 50 pixel.");
+				}
+				else if(parameterLength == 2) {
 					//backward command is ran by providing negative value in forward method
-	    			forward(-1*paramsArr[0]);
+	    			forward(-paramsArr[0]);
 	    			displayMessage("Turtle moved backward by "+paramsArr[0]+" pixel.");
 	    		}
 				else {
-					displayMessage("Error: Backward command accepts one parameters!");
+					displayMessage("Error: Backward command accepts only one parameters!");
 					flag = false;
 				}
 				break;	
@@ -837,7 +846,7 @@ public class GraphicsSystem extends LBUGraphics{
 				else
 					displayMessage("Error: Login command doesn't have any parameters!");
 				break;
-	    	case "change":
+	    	case "update":
 	    		flag = false; // This is extra database part so, flag is set false so that it is not added to commands arraylist
 	    		if(parameterLength == 1) {
 	    			changePassword();
