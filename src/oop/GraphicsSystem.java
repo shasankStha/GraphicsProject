@@ -33,10 +33,10 @@ public class GraphicsSystem extends LBUGraphics{
 	JFrame MainFrame;	// declaring JFrame
 	private ArrayList<String> commands = new ArrayList<String>(); // ArrayList to store sucessfully ran commands for saving purpose
 	
-	public static void main(String[] args)
-    {
-    	new GraphicsSystem();
-    }
+//	public static void main(String[] args)
+//    {
+//    	new GraphicsSystem();
+//    }
 	
 	//Constructor
 	public GraphicsSystem(){
@@ -269,6 +269,9 @@ public class GraphicsSystem extends LBUGraphics{
 				else
 					displayMessage("Error! This file cannot be opened here.");
 			}
+			else {
+				displayMessage("Unable to load!!!");
+			}
 		}
 		catch (Exception e) {
 			displayMessage("Error! File not found.");
@@ -298,6 +301,22 @@ public class GraphicsSystem extends LBUGraphics{
 	    	forward(length);
 	    	turnLeft();
 		}
+	}
+	
+	public void hexagon(int length) {
+		for(int i=1; i<=6;i++) {
+	    	forward(length);
+	    	turnLeft(60);
+		}
+	}
+	
+	public void star(int length) {
+		turnLeft(18);
+		for(int i = 0; i<5;i++) {
+			forward(length);
+			turnRight(144);
+		}
+		turnRight(18);
 	}
 	
 	public void penColor(int red, int green, int blue) {
@@ -700,6 +719,38 @@ public class GraphicsSystem extends LBUGraphics{
 	    		}
 				else {
 					displayMessage("Error: Circle command accepts one parameter!");
+					flag = false;
+				}
+				break;
+				
+			case "hexagon":
+				//this command will only run if circle command is provided with parameter else error message is displayed
+				if(parameterLength == 1) {
+					hexagon(100);
+	    			displayMessage("Hexagon is drawn.");
+				}
+				else if(parameterLength == 2) {
+	    			hexagon(paramsArr[0]);
+	    			displayMessage("Hexadecimal is drawn.");
+	    		}
+				else {
+					displayMessage("Error: Hexagon command accepts one parameter!");
+					flag = false;
+				}
+				break;
+				
+			case "star":
+				//this command will only run if circle command is provided with parameter else error message is displayed
+				if(parameterLength == 1) {
+					star(100);
+	    			displayMessage("Star is drawn.");
+				}
+				else if(parameterLength == 2) {
+	    			star(paramsArr[0]);
+	    			displayMessage("Star is drawn.");
+	    		}
+				else {
+					displayMessage("Error: Star command accepts one parameter!");
 					flag = false;
 				}
 				break;
